@@ -117,7 +117,7 @@ COMBOS = {
     ("富勒烯", "富勒烯"): (2160, 1880),
     ("富勒烯", "前導水"): (1660, 1480),
     ("富勒烯", "潔顏露"): (1560, 1380),
-    ("前導水", "潔顏露"): (1060, 1000),
+    ("前導水", "潔顏露"): (1060, 920),
     ("富勒烯", "保濕修復霜"): (2160, 1980),
     ("前導水", "保濕修復霜"): (1660, 1480),
 }
@@ -339,8 +339,8 @@ def apply_combos(cart_tuple, used_cross_discount=False):
 # UI 介面展示
 # -----------------------------
 def main():
-    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ Murfeeli 夢時代開幕優惠計算器</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 支援全新【包款任 2 件 95 折】與【跨品項 95 折】</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ murfeeli 新店開幕優惠計算器</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 支援全新【包款任 2 件 95 折】與【跨品項落單 95 折】</p>", unsafe_allow_html=True)
     st.write("")
 
     for p in PRICES: 
