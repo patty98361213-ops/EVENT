@@ -341,7 +341,7 @@ def apply_combos(cart_tuple, used_cross_discount=False):
 # -----------------------------
 def main():
     st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ Murfeeli 夢時代開幕優惠計算器</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 支援全新【包款任 2 件 95 折】與【跨品項 95 折】</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 活動期7/4-7/14支援全新【包款任 2 件 95 折】與【跨品項 95 折】</p>", unsafe_allow_html=True)
     st.write("")
 
     for p in PRICES: 
