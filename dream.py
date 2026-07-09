@@ -106,7 +106,7 @@ BIG_SETS = {
     ("隔離", "潔顏露", "前導水", "富勒烯", "保濕修復霜"): 3560,
     ("隔離", "潔顏露", "前導水", "富勒烯"): 2599,
     ("潔顏露", "前導水", "滲透精華", "保濕修復霜"): 2880,
-    ("隔離", "潔顏露", "小方包"): 3520,
+    ("小方包", "潔顏露", "隔離"): 3520,  # 🌟 修正後的套組置於此
 }
 
 COMBOS = {
@@ -118,7 +118,7 @@ COMBOS = {
     ("富勒烯", "富勒烯"): (2160, 1880),
     ("富勒烯", "前導水"): (1660, 1480),
     ("富勒烯", "潔顏露"): (1560, 1380),
-    ("前導水", "潔顏露"): (1060, 920),
+    ("前導水", "潔顏露"): (1060, 1000),
     ("富勒烯", "保濕修復霜"): (2160, 1980),
     ("前導水", "保濕修復霜"): (1660, 1480),
 }
@@ -142,7 +142,7 @@ PACKAGE_TWO_ITEM_DISCOUNTS = [
 ]
 
 # -----------------------------
-# 核心計算邏輯 (加入 used_cross_discount 狀態)
+# 核心計算邏輯
 # -----------------------------
 def calc_original(cart):
     return sum(PRICES[p] * qty for p, qty in cart.items())
@@ -165,7 +165,6 @@ def apply_combos(cart_tuple, used_cross_discount=False):
     if best_price > 0:
         best_plan = [(f"{p} × {q} (原價)", PRICES[p] * q) for p, q in cart.items() if q > 0]
         
-    # 小幫手函數：將字典轉換為排序後的 Tuple，供快取使用
     def make_tuple(t_cart):
         return tuple(sorted(f"{tk}:{tv}" for tk, tv in t_cart.items() if tv > 0))
     
@@ -200,17 +199,14 @@ def apply_combos(cart_tuple, used_cross_discount=False):
         if p in COSMETIC_ITEMS: 
             cosmetics += [p] * q
 
-    baguette = list(cosmetics)
-    if "法棍包" in cart: baguette += ["法棍包"] * cart["法棍包"]
-
+    # 🛑 已依要求將法棍包移出此處的任選混搭池
     puff = list(cosmetics)
     if "泡芙肩背包" in cart: puff += ["泡芙肩背包"] * cart["泡芙肩背包"]
 
-    # 3. 任三件 9 折
-    for items in [cosmetics, baguette, puff]:
+    # 3. 任三件 9 折 (僅限純保養品或泡芙肩背包混搭，無外加法棍包)
+    for items in [cosmetics, puff]:
         if len(items) >= 3:
             for group in set(combinations(items, 3)):
-                if "法棍包" in group and "泡芙肩背包" in group: continue
                 temp = cart.copy()
                 valid = True
                 for g in group:
@@ -227,11 +223,10 @@ def apply_combos(cart_tuple, used_cross_discount=False):
                     best_price = total
                     best_plan = [(f"{'+'.join(group)} 任三件9折", price)] + plan
 
-    # 4. 任兩件 95 折 (原版特定商品)
-    for items in [cosmetics, baguette, puff]:
+    # 4. 任兩件 95 折 (僅限純保養品或泡芙肩背包混搭，無外加法棍包)
+    for items in [cosmetics, puff]:
         if len(items) >= 2:
             for group in set(combinations(items, 2)):
-                if "法棍包" in group and "泡芙肩背包" in group: continue
                 temp = cart.copy()
                 valid = True
                 for g in group:
@@ -294,7 +289,7 @@ def apply_combos(cart_tuple, used_cross_discount=False):
                             best_price = total
                             best_plan = [(f"{g1}+{g2} {label_desc}", price)] + plan
 
-    # 🌟 6. 【新規則】全館包款任 2 件 95 折
+    # 6. 全館包款任 2 件 95 折
     bag_list = []
     for p, q in cart.items():
         if p in BAG_ITEMS:
@@ -313,12 +308,11 @@ def apply_combos(cart_tuple, used_cross_discount=False):
                 best_price = total
                 best_plan = [(f"{'+'.join(group)} 包款2件95折", price)] + plan
 
-    # 🌟 7. 【新規則】跨品項落單 95 折 (整筆訂單限用一次)
+    # 7. 跨品項落單 95 折 (整筆訂單限用一次)
     if not used_cross_discount:
         has_cosmetic = any(cart.get(i, 0) > 0 for i in COSMETIC_ITEMS)
         has_bag = any(cart.get(i, 0) > 0 for i in BAG_ITEMS)
         
-        # 必須同時具備保養品與包包才符合跨品項門檻
         if has_cosmetic and has_bag:
             for p, q in cart.items():
                 if q > 0:
@@ -326,7 +320,6 @@ def apply_combos(cart_tuple, used_cross_discount=False):
                     temp[p] -= 1
                     
                     price = int(round(PRICES[p] * 0.95))
-                    # 注意：這裡將 used_cross_discount 設為 True，防止同一訂單重複使用
                     new_price, plan = apply_combos(make_tuple(temp), True)
                     total = price + new_price
                     
@@ -340,8 +333,8 @@ def apply_combos(cart_tuple, used_cross_discount=False):
 # UI 介面展示
 # -----------------------------
 def main():
-    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ Murfeeli 夢時代開幕優惠計算器</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 活動期7/4-7/14支援全新【包款任 2 件 95 折】與【跨品項 95 折】</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ murfeeli 新店開幕優惠計算器</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 7/4-7/13包款2件95折與跨品項95折</p>", unsafe_allow_html=True)
     st.write("")
 
     for p in PRICES: 
@@ -394,7 +387,6 @@ def main():
             for k, v in cart.items():
                 cart_list.append(f"{k}:{v}")
                 
-            # 初始呼叫，used_cross_discount 預設為 False
             best, plan = apply_combos(tuple(sorted(cart_list)), False)
             
             res_col1, res_col2, res_col3 = st.columns(3)
