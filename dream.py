@@ -334,7 +334,7 @@ def apply_combos(cart_tuple, used_cross_discount=False):
 # -----------------------------
 def main():
     st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ murfeeli 新店開幕優惠計算器</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 7/4-7/13包款2件95折與跨品項95折</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 【暫停】包款2件95折與跨品項95折</p>", unsafe_allow_html=True)
     st.write("")
 
     for p in PRICES: 
