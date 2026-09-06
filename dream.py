@@ -334,8 +334,8 @@ def apply_combos(cart_tuple, used_cross_discount=False):
 # UI 介面展示
 # -----------------------------
 def main():
-    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ murfeeli 新店開幕優惠計算器</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 【暫停】包款2件95折與跨品項95折</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #8C7662;'>🛍️ murfeeli 夢時代周年慶優惠計算器</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #A08875;'>✨ 肩背包+潔顏9折限定30組!</p>", unsafe_allow_html=True)
     st.write("")
 
     for p in PRICES: 
